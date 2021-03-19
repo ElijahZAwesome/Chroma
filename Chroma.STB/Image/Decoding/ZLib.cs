@@ -1,5 +1,6 @@
 ﻿using System;
 using Chroma.STB.Image.Utility;
+using Chroma.STB.Shared;
 
 namespace Chroma.STB.Image.Decoding
 {

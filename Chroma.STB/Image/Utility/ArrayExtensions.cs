@@ -1,4 +1,5 @@
 ﻿using System;
+using Chroma.STB.Shared;
 
 namespace Chroma.STB.Image.Utility
 {

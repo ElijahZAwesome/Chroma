@@ -53,8 +53,8 @@ namespace Chroma.Graphics.TextRendering.TrueType
         public int ScaledLineSpacing { get; private set; }
         public int LineSpacing { get; private set; }
 
-        public int Ascender { get; private set; }
-        public int Descender { get; private set; }
+        public int Ascent { get; private set; }
+        public int Descent { get; private set; }
         public int MaxBearing { get; private set; }
 
         public bool ForceAutoHinting
@@ -203,8 +203,8 @@ namespace Chroma.Graphics.TextRendering.TrueType
                 ScaledLineSpacing = FaceRec.size->metrics.height.ToInt32() >> 6;
                 LineSpacing = FaceRec.height >> 6;
 
-                Ascender = FaceRec.size->metrics.ascender.ToInt32() >> 6;
-                Descender = (FaceRec.descender >> 6);
+                Ascent = FaceRec.size->metrics.ascender.ToInt32() >> 6;
+                Descent = (FaceRec.descender >> 6);
             }
         }
 

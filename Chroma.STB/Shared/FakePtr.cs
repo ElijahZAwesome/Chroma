@@ -1,6 +1,7 @@
 ﻿using System;
+using Chroma.STB.Image.Utility;
 
-namespace Chroma.STB.Image.Utility
+namespace Chroma.STB.Shared
 {
 	internal struct FakePtr<T> where T: new()
 	{
