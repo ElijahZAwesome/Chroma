@@ -37,6 +37,15 @@ namespace Chroma.Natives.Bindings.SDL
         public static extern long SDL_GetTouchDevice(int index);
 
         /**
+		* Get the touch device name as reported from the driver or NULL if the index
+		* is invalid.
+		*
+		* \since This function is available since SDL 2.0.22.
+		*/
+        [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern long SDL_GetTouchName(int index);
+
+        /**
 	    *  \brief Get the number of active fingers for a given touch device.
 	    */
         [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl)]

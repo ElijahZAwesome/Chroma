@@ -37,7 +37,8 @@ namespace Chroma.Windowing.EventHandling.Specialized
             Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_CONTROLLERTOUCHPADMOTION, ControllerTouchpadMoved);
             Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_CONTROLLERTOUCHPADDOWN, ControllerTouchpadTouched);
             Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_CONTROLLERTOUCHPADUP, ControllerTouchpadReleased);
-            Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_CONTROLLERSENSORUPDATE, ControllerSensorStateChanged);
+            Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_CONTROLLERSENSORUPDATE,
+                ControllerSensorStateChanged);
 
             Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_KEYUP, KeyReleased);
             Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_KEYDOWN, KeyPressed);
@@ -47,6 +48,12 @@ namespace Chroma.Windowing.EventHandling.Specialized
             Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_MOUSEWHEEL, WheelMoved);
             Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_MOUSEBUTTONDOWN, MousePressed);
             Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_MOUSEBUTTONUP, MouseReleased);
+
+            Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_FINGERDOWN, TouchPressed);
+            Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_FINGERMOTION, TouchMoved);
+            Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_FINGERUP, TouchReleased);
+
+            Dispatcher.RegisterEventHandler(SDL2.SDL_EventType.SDL_MULTIGESTURE, TouchGesture);
         }
 
         private void ControllerSensorStateChanged(Window owner, SDL2.SDL_Event ev)
@@ -77,7 +84,8 @@ namespace Chroma.Windowing.EventHandling.Specialized
 
             Controller.OnTouchpadReleased(
                 owner.Game,
-                new(controller, ev.ctouchpad.touchpad, ev.ctouchpad.finger, new(ev.ctouchpad.x, ev.ctouchpad.y), ev.ctouchpad.pressure)
+                new(controller, ev.ctouchpad.touchpad, ev.ctouchpad.finger, new(ev.ctouchpad.x, ev.ctouchpad.y),
+                    ev.ctouchpad.pressure)
             );
         }
 
@@ -88,7 +96,8 @@ namespace Chroma.Windowing.EventHandling.Specialized
 
             Controller.OnTouchpadTouched(
                 owner.Game,
-                new(controller, ev.ctouchpad.touchpad, ev.ctouchpad.finger, new(ev.ctouchpad.x, ev.ctouchpad.y), ev.ctouchpad.pressure)
+                new(controller, ev.ctouchpad.touchpad, ev.ctouchpad.finger, new(ev.ctouchpad.x, ev.ctouchpad.y),
+                    ev.ctouchpad.pressure)
             );
         }
 
@@ -99,7 +108,8 @@ namespace Chroma.Windowing.EventHandling.Specialized
 
             Controller.OnTouchpadMoved(
                 owner.Game,
-                new(controller, ev.ctouchpad.touchpad, ev.ctouchpad.finger, new(ev.ctouchpad.x, ev.ctouchpad.y), ev.ctouchpad.pressure)
+                new(controller, ev.ctouchpad.touchpad, ev.ctouchpad.finger, new(ev.ctouchpad.x, ev.ctouchpad.y),
+                    ev.ctouchpad.pressure)
             );
         }
 
@@ -150,7 +160,7 @@ namespace Chroma.Windowing.EventHandling.Specialized
 
             var guid = SDL2.SDL_JoystickGetGUID(joyInstance);
             var serialNumber = SDL2.SDL_GameControllerGetSerial(instance);
-            
+
             var playerIndex = ControllerRegistry.Instance.FindFirstFreePlayerSlot();
             SDL2.SDL_GameControllerSetPlayerIndex(instance, playerIndex);
 
@@ -172,22 +182,22 @@ namespace Chroma.Windowing.EventHandling.Specialized
             {
                 touchpadFingerLimit[i] = SDL2.SDL_GameControllerGetNumTouchpadFingers(instance, i);
             }
-            
+
             var supportedAxes = new Dictionary<ControllerAxis, bool>();
             for (var i = SDL2.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX;
-                i < SDL2.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_MAX;
-                i++)
+                 i < SDL2.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_MAX;
+                 i++)
             {
                 supportedAxes.Add(
-                    (ControllerAxis)i, 
+                    (ControllerAxis)i,
                     SDL2.SDL_GameControllerHasAxis(instance, i)
                 );
             }
 
             var supportedButtons = new Dictionary<ControllerButton, bool>();
             for (var i = SDL2.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A;
-                i < SDL2.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MAX;
-                i++)
+                 i < SDL2.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_MAX;
+                 i++)
             {
                 supportedButtons.Add(
                     (ControllerButton)i,
@@ -197,7 +207,7 @@ namespace Chroma.Windowing.EventHandling.Specialized
 
             var controllerInfo = new ControllerInfo(
                 joyInstance,
-                instance, 
+                instance,
                 instanceId,
                 guid,
                 playerIndex,
@@ -216,9 +226,9 @@ namespace Chroma.Windowing.EventHandling.Specialized
 
             var controller = ControllerFactory.Create(controllerInfo);
             ControllerRegistry.Instance.Register(instance, controller);
-            
+
             Controller.OnConnected(
-                owner.Game, 
+                owner.Game,
                 new(controller)
             );
         }
@@ -231,7 +241,7 @@ namespace Chroma.Windowing.EventHandling.Specialized
             ControllerRegistry.Instance.Unregister(instance);
 
             Controller.OnDisconnected(
-                owner.Game, 
+                owner.Game,
                 new ControllerEventArgs(controller)
             );
         }
@@ -336,6 +346,72 @@ namespace Chroma.Windowing.EventHandling.Specialized
                     ev.button.state,
                     ev.button.button,
                     ev.button.clicks
+                )
+            );
+        }
+
+        private void TouchPressed(Window owner, SDL2.SDL_Event ev)
+        {
+            if (ev.tfinger.touchId == SDL2.SDL_MOUSE_TOUCHID)
+                return;
+
+            Touch.OnTouchPressed(
+                owner.Game,
+                new TouchEventArgs(
+                    ev.tfinger.touchId,
+                    ev.tfinger.fingerId,
+                    new Vector2(ev.tfinger.x, ev.tfinger.y),
+                    Vector2.Zero,
+                    ev.tfinger.pressure
+                )
+            );
+        }
+
+        private void TouchMoved(Window owner, SDL2.SDL_Event ev)
+        {
+            if (ev.tfinger.touchId == SDL2.SDL_MOUSE_TOUCHID)
+                return;
+
+            owner.Game.OnTouchMoved(
+                new TouchEventArgs(
+                    ev.tfinger.touchId,
+                    ev.tfinger.fingerId,
+                    new Vector2(ev.tfinger.x, ev.tfinger.y),
+                    new Vector2(ev.tfinger.dx, ev.tfinger.dy),
+                    ev.tfinger.pressure
+                )
+            );
+        }
+
+        private void TouchReleased(Window owner, SDL2.SDL_Event ev)
+        {
+            if (ev.tfinger.touchId == SDL2.SDL_MOUSE_TOUCHID)
+                return;
+
+            Touch.OnTouchReleased(
+                owner.Game,
+                new TouchEventArgs(
+                    ev.tfinger.touchId,
+                    ev.tfinger.fingerId,
+                    new Vector2(ev.tfinger.x, ev.tfinger.y),
+                    Vector2.Zero,
+                    ev.tfinger.pressure
+                )
+            );
+        }
+
+        private void TouchGesture(Window owner, SDL2.SDL_Event ev)
+        {
+            if (ev.mgesture.touchId == SDL2.SDL_MOUSE_TOUCHID)
+                return;
+
+            owner.Game.OnTouchGesture(
+                new GestureEventArgs(
+                    ev.mgesture.touchId,
+                    new Vector2(ev.mgesture.x, ev.mgesture.y),
+                    ev.mgesture.dTheta,
+                    ev.mgesture.dDist,
+                    ev.mgesture.numFingers
                 )
             );
         }

@@ -5,6 +5,8 @@ namespace Chroma.Natives.Bindings.SDL
 {
     internal static partial class SDL2
     {
+        public const long SDL_MOUSE_TOUCHID = long.MaxValue;
+        
         /* Note: SDL_Cursor is a typedef normally. We'll treat it as
         * an IntPtr, because C# doesn't do typedefs. Yay!
         */

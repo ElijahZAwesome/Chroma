@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>10.0</LangVersion>
+        <RootNamespace>TouchInput</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <Version>1.0</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Chroma\Chroma.csproj" />
+    </ItemGroup>
+
+</Project>

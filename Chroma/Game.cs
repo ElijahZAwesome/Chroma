@@ -142,6 +142,22 @@ namespace Chroma
         protected virtual void WheelMoved(MouseWheelEventArgs e)
         {
         }
+        
+        protected virtual void TouchPressed(TouchEventArgs e)
+        {
+        }
+        
+        protected virtual void TouchMoved(TouchEventArgs e)
+        {
+        }
+
+        protected virtual void TouchReleased(TouchEventArgs e)
+        {
+        }
+
+        protected virtual void TouchGesture(GestureEventArgs e)
+        {
+        }
 
         protected virtual void KeyPressed(KeyEventArgs e)
         {
@@ -215,6 +231,18 @@ namespace Chroma
 
         internal void OnWheelMoved(MouseWheelEventArgs e)
             => HookRegistry.WrapCall(HookPoint.WheelMoved, e, WheelMoved);
+
+        internal void OnTouchPressed(TouchEventArgs e)
+            => HookRegistry.WrapCall(HookPoint.TouchPressed, e, TouchPressed);
+
+        internal void OnTouchMoved(TouchEventArgs e)
+            => HookRegistry.WrapCall(HookPoint.TouchMoved, e, TouchMoved);
+
+        internal void OnTouchReleased(TouchEventArgs e)
+            => HookRegistry.WrapCall(HookPoint.TouchReleased, e, TouchReleased);
+
+        internal void OnTouchGesture(GestureEventArgs e)
+            => HookRegistry.WrapCall(HookPoint.MultiGesture, e, TouchGesture);
 
         internal void OnKeyPressed(KeyEventArgs e)
             => HookRegistry.WrapCall(HookPoint.KeyPressed, e, KeyPressed);
