@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Chroma.ContentManagement.FileSystem;
 using Chroma.Diagnostics.Logging.Decorators;
 using Chroma.Diagnostics.Logging.Sinks;
 
@@ -15,7 +16,7 @@ namespace Chroma.Diagnostics.Logging
 
         static LogManager()
         {
-            LogRoot = Path.Combine(AppContext.BaseDirectory, "Logs");
+            LogRoot = Path.Combine(FileSystemUtils.BaseDirectory, "Logs");
 
             if (!Directory.Exists(LogRoot))
                 Directory.CreateDirectory(LogRoot);

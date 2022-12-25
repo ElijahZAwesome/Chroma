@@ -64,6 +64,10 @@ do
     --rebuild-hb)
         rm -rf $BUILDROOT_DIR/$HB
         ;;
+
+    --android)
+        PLATFORM="android"
+        ;;
   esac
 done
 
@@ -83,6 +87,11 @@ case $PLATFORM in
     linux*)
         echo "Building for Linux"
         BUILDSCRIPT=$SCRIPT_DIR/build_natives_linux
+        ;;
+
+    android*)
+        echo "Building for Android"
+        BUILDSCRIPT=$SCRIPT_DIR/build_natives_android
         ;;
 
     darwin*)

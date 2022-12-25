@@ -4,6 +4,7 @@ using System.Numerics;
 using Chroma;
 using Chroma.Audio.Sources;
 using Chroma.ContentManagement;
+using Chroma.ContentManagement.FileSystem;
 using Chroma.Graphics;
 using Chroma.Input;
 
@@ -31,7 +32,7 @@ namespace CustomContentProvider
         {
             return new ZipContentProvider(
                 this, 
-                Path.Combine(AppContext.BaseDirectory, "../../../../_common/assets.zip")
+                Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common/assets.zip")
             );
         }
 

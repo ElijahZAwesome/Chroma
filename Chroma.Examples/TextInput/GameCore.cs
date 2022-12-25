@@ -41,14 +41,14 @@ namespace TextInput
         protected override IContentProvider InitializeContentPipeline()
         {
             return new FileSystemContentProvider(
-                Path.Combine(AppContext.BaseDirectory, "../../../../_common")
+                Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );
         }
 
         protected override void LoadContent()
         {
             using var fs = new FileStream(
-                Path.Combine(AppContext.BaseDirectory, "../../../../_common/Fonts/dos8x14.ttf"),
+                Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common/Fonts/dos8x14.ttf"),
                 FileMode.Open
             );
 

@@ -1,0 +1,117 @@
+#!/bin/bash
+
+if [[ "android" != *"$PLATFORM"* ]]; then
+  echo "This platform is not Linux."
+  echo "Use build_natives to build for a supported platform."
+  exit 1
+fi
+
+if [[ -z "$NDK_ROOT" ]]; then
+  echo "set NDK_ROOT env variable"
+  exit 1
+fi
+
+ARCHS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
+ANDROID_TARGET="android-29"
+
+FT_SOPATH=$FT_BUILDROOT/libfreetype.so
+FT_ARTIFACT=libfreetype.so
+
+SDL_SOPATH=$SDL_BUILDROOT/libSDL2-2.0.so
+SDL_ARTIFACT=libSDL2.so
+
+SDL_MAIN_ARTIFACT=libmain.so
+
+SDL_GPU_SOPATH=$SDL_GPU_BUILDROOT/SDL_gpu/lib/libSDL2_gpu.so
+SDL_GPU_ARTIFACT=libSDL2_gpu.so
+
+SDL_SOUND_SOPATH=$SDL_SOUND_BUILDROOT/libSDL2_sound.so.2.0.1
+SDL_SOUND_ARTIFACT=libSDL2_sound.so
+
+for ARCH in "${ARCHS[@]}"; do
+
+  mkdir -p $ARTIFACT_DIR/$ARCH
+
+  if [ "$SKIP_FT" -eq "0" ]; then
+        $CMAKE $CMAKE_FLAGS -B $FT_BUILDROOT $FT_PATH -G "$CMAKE_GENERATOR"                 \
+                          -DCMAKE_BUILD_TYPE=$FT_BUILD_TYPE                                 \
+                          -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=1                           \
+                          -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=1                               \
+                          -DBUILD_SHARED_LIBS=1                                             \
+                          -DFT_WITH_ZLIB=0                                                  \
+                          -DFT_WITH_HARFBUZZ=0                                              \
+                          -DANDROID_PLATFORM=${ANDROID_TARGET}                              \
+                          -DANDROID_NATIVE_API_LEVEL=${ANDROID_TARGET}                      \
+                          -DANDROID_ABI=${ARCH}                                             \
+                          -DCMAKE_ANDROID_STL=c++_shared                                    \
+                          -DCMAKE_ANDROID_NDK=$NDK_ROOT                                     \
+                          -DCMAKE_TOOLCHAIN_FILE=$NDK_ROOT/build/cmake/android.toolchain.cmake \
+                          -DANDROID_NDK=${NDK_ROOT}                                         \
+                          -DANDROID_TOOLCHAIN=clang                                         \
+                          && cd $FT_BUILDROOT && $MAKE -j$THREADCOUNT                       \
+                          && mv $FT_SOPATH $ARTIFACT_DIR/$ARCH/$FT_ARTIFACT                 \
+                                                                                            \
+      && $CMAKE $CMAKE_FLAGS -B $HB_BUILDROOT $HB_PATH -G "$CMAKE_GENERATOR"                \
+                          -DCMAKE_BUILD_TYPE=$HB_BUILD_TYPE                                 \
+                          -DCMAKE_CXX_FLAGS=-fPIC                                           \
+                          -DCMAKE_C_FLAGS=-fPIC                                             \
+                          -DHB_BUILD_SUBSET=0                                               \
+                          -DHB_HAVE_FREETYPE=1                                              \
+                          -DFREETYPE_FOUND=1                                                \
+                          -DFREETYPE_INCLUDE_DIRS=$FT_PATH/include                          \
+                          -DFREETYPE_LIBRARY=$ARTIFACT_DIR/$FT_ARTIFACT                     \
+                          -DANDROID_ABI=${ARCH}                                             \
+                          -DANDROID_PLATFORM=${ANDROID_TARGET}                              \
+                          -DANDROID_NATIVE_API_LEVEL=${ANDROID_TARGET}                      \
+                          -DCMAKE_ANDROID_STL=c++_shared                                    \
+                          -DCMAKE_ANDROID_NDK=$NDK_ROOT                                     \
+                          -DCMAKE_TOOLCHAIN_FILE=$NDK_ROOT/build/cmake/android.toolchain.cmake \
+                          -DANDROID_NDK=${NDK_ROOT}                                         \
+                          -DANDROID_TOOLCHAIN=clang                                         \
+                          && cd $HB_BUILDROOT && $MAKE -j$THREADCOUNT                       \
+                          && mv $HB_ARPATH $ARTIFACT_DIR/$ARCH/$HB_ARTIFACT                 \
+                          && rm -rf $FT_BUILDROOT                                           \
+                                                                                            \
+      && $CMAKE $CMAKE_FLAGS -B $FT_BUILDROOT $FT_PATH -G "$CMAKE_GENERATOR"                \
+                          -DCMAKE_BUILD_TYPE=$FT_BUILD_TYPE                                 \
+                          -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=1                               \
+                          -DBUILD_SHARED_LIBS=1                                             \
+                          -DFT_WITH_HARFBUZZ=1                                              \
+                          -DFT_WITH_ZLIB=0                                                  \
+                          -DHarfBuzz_INCLUDE_DIR=$HB_PATH/src                               \
+                          -DHarfBuzz_LIBRARY=$ARTIFACT_DIR/$ARCH/$HB_ARTIFACT               \
+                          -DANDROID_ABI=${ARCH}                                             \
+                          -DANDROID_NATIVE_API_LEVEL=${ANDROID_TARGET}                      \
+                          -DANDROID_PLATFORM=${ANDROID_TARGET}                              \
+                          -DCMAKE_ANDROID_STL=c++_shared                                    \
+                          -DCMAKE_ANDROID_NDK=$NDK_ROOT                                     \
+                          -DCMAKE_TOOLCHAIN_FILE=$NDK_ROOT/build/cmake/android.toolchain.cmake \
+                          -DANDROID_NDK=${NDK_ROOT}                                         \
+                          -DANDROID_TOOLCHAIN=clang                                         \
+                          && cd $FT_BUILDROOT && $MAKE -j$THREADCOUNT                       \
+                          && mv $FT_SOPATH $ARTIFACT_DIR/$ARCH/$FT_ARTIFACT                 \
+                          && rm -rf $HB_BUILDROOT
+  fi
+
+done
+
+cd $SDL_PATH/build-scripts \
+&& ./androidbuild.sh org.libsdl /dev/null \
+&& cd $SDL_PATH/build/org.libsdl/app/jni/ \
+&& ln -s $SDL_SOUND_PATH ./ \
+&& ln -s $SDL_GPU_PATH ./ \
+&& rm $SDL_PATH/build/org.libsdl/app/jni/src/* \
+&& cd $SDL_PATH/build/org.libsdl/app/jni/src/ \
+&& cp $SCRIPT_DIR/lib/Android.mk ./ \
+&& cp $SCRIPT_DIR/lib/sdl2droid-cs-wrapper.c ./ \
+&& cp $SCRIPT_DIR/lib/sdl2droid-cs-wrapper.h ./ \
+&& cd $SDL_PATH/build/org.libsdl/app/jni/ \
+&& ndk-build -j$(nproc)
+
+for ARCH in "${ARCHS[@]}"; do
+  mv $SDL_PATH/build/org.libsdl/app/libs/$ARCH/$SDL_ARTIFACT $ARTIFACT_DIR/$ARCH/$SDL_ARTIFACT &&
+  mv $SDL_PATH/build/org.libsdl/app/libs/$ARCH/$SDL_MAIN_ARTIFACT $ARTIFACT_DIR/$ARCH/$SDL_MAIN_ARTIFACT &&
+  mv $SDL_PATH/build/org.libsdl/app/libs/$ARCH/$SDL_GPU_ARTIFACT $ARTIFACT_DIR/$ARCH/$SDL_GPU_ARTIFACT &&
+  mv $SDL_PATH/build/org.libsdl/app/libs/$ARCH/$SDL_SOUND_ARTIFACT $ARTIFACT_DIR/$ARCH/$SDL_SOUND_ARTIFACT &&
+  rm $ARTIFACT_DIR/$ARCH/$HB_ARTIFACT
+done

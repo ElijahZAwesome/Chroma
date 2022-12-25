@@ -100,7 +100,7 @@ namespace ArbitraryGeometry
         {
             return new FileSystemContentProvider(
                 Path.Combine(
-                    AppContext.BaseDirectory, 
+                    FileSystemUtils.BaseDirectory, 
                     "../../../../_common"
                 )
             );

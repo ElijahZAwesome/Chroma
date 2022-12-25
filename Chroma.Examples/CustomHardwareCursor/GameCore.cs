@@ -24,7 +24,7 @@ namespace CustomHardwareCursor
             // so sharing between them is necessary to keep the
             // source tree clean
             return new FileSystemContentProvider(
-                Path.Combine(AppContext.BaseDirectory, "../../../../_common")
+                Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );
         }
 

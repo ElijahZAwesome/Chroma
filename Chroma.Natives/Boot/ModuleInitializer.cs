@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Chroma.NALO;
@@ -22,29 +21,32 @@ namespace Chroma.Natives.Boot
             if (!Environment.Is64BitOperatingSystem)
                 throw new PlatformNotSupportedException("Chroma supports 64-bit systems only.");
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (OperatingSystem.IsWindows())
                 SetupConsoleMode();
 
             {
                 EarlyLog.Info($"It is {DateTime.Now.ToString("MMM dd, yyyy", CultureInfo.InvariantCulture)}.");
                 EarlyLog.Info("Please wait. I'm trying to boot...");
-                
+
                 ReadBootConfig();
 
-                try
+                if (!OperatingSystem.IsAndroid())
                 {
-                    if (BootConfig.SkipChecksumVerification)
-                        EarlyLog.Warning("Checksum verification disabled. Living on the edge, huh?");
+                    try
+                    {
+                        if (BootConfig.SkipChecksumVerification)
+                            EarlyLog.Warning("Checksum verification disabled. Living on the edge, huh?");
 
-                    NativeLoader.LoadNatives(BootConfig.SkipChecksumVerification);
-                }
-                catch (NativeLoaderException nle)
-                {
-                    EarlyLog.Error($"{nle.Message}. Inner exception: {nle.InnerException}");
-                    Console.WriteLine("Press any key to terminate...");
-                    Console.ReadKey();
+                        NativeLoader.LoadNatives(BootConfig.SkipChecksumVerification);
+                    }
+                    catch (NativeLoaderException nle)
+                    {
+                        EarlyLog.Error($"{nle.Message}. Inner exception: {nle.InnerException}");
+                        Console.WriteLine("Press any key to terminate...");
+                        Console.ReadKey();
 
-                    Environment.Exit(1);
+                        Environment.Exit(1);
+                    }
                 }
 
                 if (BootConfig.HookSdlLog)
@@ -72,8 +74,11 @@ namespace Chroma.Natives.Boot
 
         private static void ReadBootConfig()
         {
+            var dir = OperatingSystem.IsAndroid()
+                ? Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+                : AppContext.BaseDirectory;
             var bootConfigPath = Path.Combine(
-                AppContext.BaseDirectory,
+                dir,
                 "boot.json"
             );
 

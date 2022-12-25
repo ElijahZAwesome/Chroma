@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Chroma.NALO.PlatformSpecific.Utils;
 
 namespace Chroma.NALO
 {
@@ -20,7 +21,7 @@ namespace Chroma.NALO
             
             try
             {
-                var logDir = Path.Combine(AppContext.BaseDirectory, "Logs");
+                var logDir = Path.Combine(FileSystemUtils.BaseDirectory, "Logs");
 
                 if (!Directory.Exists(logDir))
                     Directory.CreateDirectory(logDir);
