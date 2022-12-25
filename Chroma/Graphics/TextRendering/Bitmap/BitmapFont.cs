@@ -14,17 +14,20 @@ namespace Chroma.Graphics.TextRendering.Bitmap
     {
         private static readonly Log _log = LogManager.GetForCurrentAssembly();
 
-        private readonly List<string> _lines;
-        private readonly Dictionary<string, Action> _parsers;
+        private readonly Func<string, Texture> _pageTextureLookup;
+
+        private List<string> _lines;
+        private Dictionary<string, Action> _parsers;
+
         private BitmapFontLexer _lexer;
-        
+
         private BitmapFontInfo Info { get; set; }
         private BitmapFontCommon Common { get; set; }
 
         private List<BitmapFontPage> Pages { get; } = new();
         private List<BitmapFontKerningPair> Kernings { get; } = new();
         private Dictionary<char, BitmapGlyph> Glyphs { get; } = new();
-        
+
         public string FamilyName => Info.FaceName;
         public string FileName { get; }
 
@@ -36,22 +39,39 @@ namespace Chroma.Graphics.TextRendering.Bitmap
         public int Height => Info.Size;
         public int LineSpacing => (int)(Common.LineHeight + Info.Spacing.Y);
 
-        public BitmapFont(string fileName)
+        public BitmapFont(string fileName, Stream dataStream, Func<string, Texture> pageTextureLookup = null)
         {
             FileName = fileName;
+            _pageTextureLookup = pageTextureLookup;
 
-            using (var sr = new StreamReader(FileName))
+            Initialize(dataStream);
+        }
+
+        public BitmapFont(string fileName, Func<string, Texture> pageTextureLookup = null)
+        {
+            FileName = fileName;
+            _pageTextureLookup = pageTextureLookup;
+
+            using (var fs = new FileStream(FileName, FileMode.Open))
+            {
+                Initialize(fs);
+            }
+        }
+
+        private void Initialize(Stream dataStream)
+        {
+            using (var sr = new StreamReader(dataStream))
                 _lines = sr.ReadToEnd().Split('\n').ToList();
 
             _parsers = new Dictionary<string, Action>
             {
-                {"info", ParseFontInformation},
-                {"common", ParseFontCommons},
-                {"page", ParsePage},
-                {"chars", ParseCharCount},
-                {"char", ParseChar},
-                {"kernings", ParseKerningCount},
-                {"kerning", ParseKerningInfo}
+                { "info", ParseFontInformation },
+                { "common", ParseFontCommons },
+                { "page", ParsePage },
+                { "chars", ParseCharCount },
+                { "char", ParseChar },
+                { "kernings", ParseKerningCount },
+                { "kerning", ParseKerningInfo }
             };
 
             ParseFontDefinition();
@@ -105,7 +125,7 @@ namespace Chroma.Graphics.TextRendering.Bitmap
                 return null;
 
             var glyph = Glyphs[c];
-            
+
             return Pages[glyph.Page].Texture;
         }
 
@@ -322,10 +342,7 @@ namespace Chroma.Graphics.TextRendering.Bitmap
                         break;
 
                     case "file":
-                        fileName = Path.Combine(
-                            Path.GetDirectoryName(FileName)!,
-                            _lexer.CurrentValue
-                        );
+                        fileName = _lexer.CurrentValue;
                         break;
 
                     default:
@@ -339,7 +356,7 @@ namespace Chroma.Graphics.TextRendering.Bitmap
 
             if (id >= 0)
             {
-                Pages.Add(new BitmapFontPage(id, fileName));
+                Pages.Add(new BitmapFontPage(id, Path.GetDirectoryName(FileName), fileName, _pageTextureLookup));
             }
             else
             {
