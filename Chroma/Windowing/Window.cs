@@ -396,6 +396,13 @@ namespace Chroma.Windowing
 
             if (Handle == IntPtr.Zero)
                 throw new FrameworkException($"Failed to initialize the window: {SDL2.SDL_GetError()}.");
+            
+            // TODO Figure out if there's a way to skip this (Android).
+            // This is required to prevent stretching on android for whatever reason. Idk.
+            SDL_gpu.GPU_SetWindowResolution(
+                (ushort)Size.Width,
+                (ushort)Size.Height
+            );
 
             Title = _title;
             Position = _position;

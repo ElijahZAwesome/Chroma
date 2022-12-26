@@ -35,14 +35,9 @@ public class MainActivity : SDLActivity
         base.Dispose(disposing);
     }
 
-    public override void OnConfigurationChanged(Configuration newConfig)
-    {
-        base.OnConfigurationChanged(newConfig);
-    }
-
     public override void OnWindowFocusChanged(bool hasFocus)
     {
         base.OnWindowFocusChanged(hasFocus);
-        Window!.SetDecorFitsSystemWindows(!(hasFocus && Fullscreen));
+        Window!.SetDecorFitsSystemWindows(hasFocus && Fullscreen);
     }
 }
