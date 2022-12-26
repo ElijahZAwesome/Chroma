@@ -216,8 +216,8 @@ namespace Chroma.Graphics
             var rendererId = _rendererIdStack.Peek();
             var renderTargetHandle = SDL_gpu.GPU_InitRendererByID(
                 rendererId,
-                (ushort)window.Size.Height,
                 (ushort)window.Size.Width,
+                (ushort)window.Size.Height,
                 SDL2.SDL_WindowFlags.SDL_WINDOW_OPENGL
                 | SDL2.SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI
                 | SDL2.SDL_WindowFlags.SDL_WINDOW_SHOWN
