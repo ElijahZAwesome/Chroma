@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace Chroma.NALO
 {
@@ -11,11 +10,11 @@ namespace Chroma.NALO
         {
             get
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                if (OperatingSystem.IsLinux())
                     return "linux_64";
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                else if (OperatingSystem.IsWindows())
                     return "windows_64";
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                else if (OperatingSystem.IsMacOS())
                     return "osx_64";
                 else
                     throw new PlatformNotSupportedException("Unsupported platform.");
@@ -26,11 +25,11 @@ namespace Chroma.NALO
         {
             get
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                if (OperatingSystem.IsLinux())
                     return ".so";
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                else if (OperatingSystem.IsWindows())
                     return ".dll";
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                else if (OperatingSystem.IsMacOS())
                     return ".dylib";
                 else throw new PlatformNotSupportedException("Unsupported platform.");
             }

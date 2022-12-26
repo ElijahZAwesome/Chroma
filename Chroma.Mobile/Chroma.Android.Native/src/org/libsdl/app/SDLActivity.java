@@ -274,6 +274,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         return new String[] {
             "freetype",
             "SDL2",
+            "SDL2_gpu",
             "SDL2_sound",
             // "SDL2_image",
             // "SDL2_mixer",

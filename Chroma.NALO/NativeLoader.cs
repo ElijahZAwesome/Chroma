@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Chroma.NALO.PlatformSpecific;
 using Chroma.NALO.Syscalls;
 
@@ -41,15 +40,15 @@ namespace Chroma.NALO
 
                 if (Platform == null)
                 {
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    if (OperatingSystem.IsWindows())
                     {
                         Platform = new WindowsPlatform();
                     }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    else if (OperatingSystem.IsLinux())
                     {
                         Platform = new LinuxPlatform();
                     }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    else if (OperatingSystem.IsMacOS())
                     {
                         Platform = new MacPlatform();
                     }

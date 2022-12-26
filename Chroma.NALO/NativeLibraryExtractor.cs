@@ -30,7 +30,7 @@ namespace Chroma.NALO
             {
                 var appDirPath = AppContext.BaseDirectory;
 
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                if (OperatingSystem.IsLinux())
                 {
                     libraryRoot = appDirPath;
                 }

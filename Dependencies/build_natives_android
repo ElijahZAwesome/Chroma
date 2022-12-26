@@ -11,8 +11,8 @@ if [[ -z "$NDK_ROOT" ]]; then
   exit 1
 fi
 
-ARCHS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
-ANDROID_TARGET="android-29"
+ARCHS=("arm64-v8a" "x86_64")
+ANDROID_TARGET="android-31"
 
 FT_SOPATH=$FT_BUILDROOT/libfreetype.so
 FT_ARTIFACT=libfreetype.so
@@ -105,13 +105,18 @@ cd $SDL_PATH/build-scripts \
 && cp $SCRIPT_DIR/lib/Android.mk ./ \
 && cp $SCRIPT_DIR/lib/sdl2droid-cs-wrapper.c ./ \
 && cp $SCRIPT_DIR/lib/sdl2droid-cs-wrapper.h ./ \
+&& cd $SDL_PATH/build/org.libsdl/app/jni/SDL_gpu/ \
+&& sed -i "s/^LOCAL_CFLAGS += -DSDL_GPU_DISABLE_GLES_3.*/LOCAL_CFLAGS += -DSDL_GPU_DISABLE_GLES_3 -DSDL_GPU_DISABLE_GLES_1/" ./Android.mk \
 && cd $SDL_PATH/build/org.libsdl/app/jni/ \
+&& sed -i "s/^APP_PLATFORM=.*/APP_PLATFORM=android-31/" ./Application.mk \
 && ndk-build -j$(nproc)
 
 for ARCH in "${ARCHS[@]}"; do
   mv $SDL_PATH/build/org.libsdl/app/libs/$ARCH/$SDL_ARTIFACT $ARTIFACT_DIR/$ARCH/$SDL_ARTIFACT &&
   mv $SDL_PATH/build/org.libsdl/app/libs/$ARCH/$SDL_MAIN_ARTIFACT $ARTIFACT_DIR/$ARCH/$SDL_MAIN_ARTIFACT &&
   mv $SDL_PATH/build/org.libsdl/app/libs/$ARCH/$SDL_GPU_ARTIFACT $ARTIFACT_DIR/$ARCH/$SDL_GPU_ARTIFACT &&
-  mv $SDL_PATH/build/org.libsdl/app/libs/$ARCH/$SDL_SOUND_ARTIFACT $ARTIFACT_DIR/$ARCH/$SDL_SOUND_ARTIFACT &&
-  rm $ARTIFACT_DIR/$ARCH/$HB_ARTIFACT
+  mv $SDL_PATH/build/org.libsdl/app/libs/$ARCH/$SDL_SOUND_ARTIFACT $ARTIFACT_DIR/$ARCH/$SDL_SOUND_ARTIFACT
+  if [ "$SKIP_FT" -eq "0" ]; then
+    rm $ARTIFACT_DIR/$ARCH/$HB_ARTIFACT
+  fi
 done

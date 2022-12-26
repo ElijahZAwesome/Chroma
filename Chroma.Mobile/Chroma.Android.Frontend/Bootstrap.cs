@@ -6,14 +6,22 @@ namespace Chroma.Android.Frontend;
 static class Bootstrap
 {
     delegate void Main();
-    
+
+    public static Game Game;
+
     public static void SDL_Main()
     {
         MainActivity.Fullscreen = true;
         MainActivity.ActivityInstance.RunOnUiThread(MainActivity.ActivityInstance.ActionBar.Hide);
         DisplayMetrics metrics = new DisplayMetrics();
         MainActivity.ActivityInstance.WindowManager.DefaultDisplay.GetMetrics(metrics);
-        new Game().Run();
+        Game = new Game();
+        Game.Run();
+    }
+
+    public static void Quit()
+    {
+        Game?.Quit();
     }
 
     public static void SetupMain()

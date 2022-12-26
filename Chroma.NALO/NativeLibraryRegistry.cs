@@ -98,7 +98,7 @@ namespace Chroma.NALO
         private IntPtr RegisterPlatformSpecific(string absoluteFilePath,
             out NativeLibrary.SymbolLookupDelegate symbolLookup)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (OperatingSystem.IsLinux())
             {
                 var handle = Posix.dlopen(absoluteFilePath, Posix.RTLD_LAZY | Posix.RTLD_GLOBAL);
 
@@ -110,7 +110,7 @@ namespace Chroma.NALO
                 return handle;
             }
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (OperatingSystem.IsMacOS())
             {
                 var handle = Posix.dlopen(absoluteFilePath, Posix.RTLD_LAZY | Posix.RTLD_GLOBAL);
 
@@ -122,7 +122,7 @@ namespace Chroma.NALO
                 return handle;
             }
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (OperatingSystem.IsWindows())
             {
                 var dllDirectory = Path.GetDirectoryName(absoluteFilePath);
                 var fileName = Path.GetFileName(absoluteFilePath);

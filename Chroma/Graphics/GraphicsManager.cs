@@ -271,6 +271,9 @@ namespace Chroma.Graphics
 
         private bool EnumerateGlExtensions()
         {
+            if (OperatingSystem.IsAndroid())
+                return true;
+
             Gl.GetIntegerV(Gl.GL_NUM_EXTENSIONS, out var numExtensions);
 
             if (numExtensions <= 0)
@@ -289,29 +292,30 @@ namespace Chroma.Graphics
 
         private bool ProbeGlLimits(SDL_gpu.GPU_RendererID rendererId, Func<bool> probeLogic)
         {
-            // TODO Probing OpenGL version crashes under GLES, but it doesn't seem required so removing for now
-            /*
-            if (SDL2.SDL_GL_SetAttribute(
-                SDL2.SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, rendererId.major_version) < 0)
+            if (!OperatingSystem.IsAndroid())
             {
-                _log.Error($"Failed to set probe-time OpenGL major version attribute: {SDL2.SDL_GetError()}");
-                return false;
-            }
+                if (SDL2.SDL_GL_SetAttribute(
+                        SDL2.SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, rendererId.major_version) < 0)
+                {
+                    _log.Error($"Failed to set probe-time OpenGL major version attribute: {SDL2.SDL_GetError()}");
+                    return false;
+                }
 
-            if (SDL2.SDL_GL_SetAttribute(
-                SDL2.SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, rendererId.minor_version) < 0)
-            {
-                _log.Error($"Failed to set probe-time OpenGL minor version attribute: {SDL2.SDL_GetError()}");
-                return false;
-            }
+                if (SDL2.SDL_GL_SetAttribute(
+                        SDL2.SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, rendererId.minor_version) < 0)
+                {
+                    _log.Error($"Failed to set probe-time OpenGL minor version attribute: {SDL2.SDL_GetError()}");
+                    return false;
+                }
 
-            if (SDL2.SDL_GL_SetAttribute(
-                SDL2.SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, SDL2.SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE) < 0)
-            {
-                _log.Error($"Failed to set probe-time OpenGL core profile preference: {SDL2.SDL_GetError()}");
-                return false;
+                if (SDL2.SDL_GL_SetAttribute(
+                        SDL2.SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, SDL2.SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE) <
+                    0)
+                {
+                    _log.Error($"Failed to set probe-time OpenGL core profile preference: {SDL2.SDL_GetError()}");
+                    return false;
+                }
             }
-            */
 
             var window = SDL2.SDL_CreateWindow(
                 "Chroma Probe Window",

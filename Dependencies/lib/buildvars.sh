@@ -9,7 +9,7 @@ CMAKE_FLAGS=-Wno-dev
 
 MAKE=make
 
-SKIP_FT=1
+SKIP_FT=0
 
 FT_TAG=VER-2-11-0
 HB_TAG=2.9.0
