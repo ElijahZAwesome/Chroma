@@ -31,8 +31,8 @@ namespace Chroma.Graphics
             get
             {
                 SDL2.SDL_GL_GetDrawableSize(
-                    Window.Instance.Handle, 
-                    out var w, 
+                    Window.Instance.Handle,
+                    out var w,
                     out var h
                 );
 
@@ -54,14 +54,15 @@ namespace Chroma.Graphics
 
                     if (SDL2.SDL_GL_SetSwapInterval(1) < 0)
                     {
-                        _log.Error($"Failed to set the fallback vertical retrace synchronization mode: {SDL2.SDL_GetError()}.");
+                        _log.Error(
+                            $"Failed to set the fallback vertical retrace synchronization mode: {SDL2.SDL_GetError()}.");
                         return;
                     }
-                    
+
                     _verticalSyncMode = VerticalSyncMode.Retrace;
                     return;
                 }
-                
+
                 _verticalSyncMode = value;
             }
         }
@@ -215,11 +216,13 @@ namespace Chroma.Graphics
             var rendererId = _rendererIdStack.Peek();
             var renderTargetHandle = SDL_gpu.GPU_InitRendererByID(
                 rendererId,
-                (ushort)window.Size.Width,
                 (ushort)window.Size.Height,
+                (ushort)window.Size.Width,
                 SDL2.SDL_WindowFlags.SDL_WINDOW_OPENGL
                 | SDL2.SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI
                 | SDL2.SDL_WindowFlags.SDL_WINDOW_SHOWN
+                // Fullscreen is required or all hell breaks loose on Mobile
+                | (OperatingSystem.IsAndroid() ? SDL2.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN : 0) 
             );
 
             if (renderTargetHandle == IntPtr.Zero)
@@ -292,29 +295,31 @@ namespace Chroma.Graphics
 
         private bool ProbeGlLimits(SDL_gpu.GPU_RendererID rendererId, Func<bool> probeLogic)
         {
-            if (!OperatingSystem.IsAndroid())
+            // TODO Determine if this is actually needed as obviously we'd rather have sanity checking than not.
+            // Currently to my understanding, creating extra windows is asking for trouble.
+            if (OperatingSystem.IsAndroid())
+                return true;
+
+            if (SDL2.SDL_GL_SetAttribute(
+                    SDL2.SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, rendererId.major_version) < 0)
             {
-                if (SDL2.SDL_GL_SetAttribute(
-                        SDL2.SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, rendererId.major_version) < 0)
-                {
-                    _log.Error($"Failed to set probe-time OpenGL major version attribute: {SDL2.SDL_GetError()}");
-                    return false;
-                }
+                _log.Error($"Failed to set probe-time OpenGL major version attribute: {SDL2.SDL_GetError()}");
+                return false;
+            }
 
-                if (SDL2.SDL_GL_SetAttribute(
-                        SDL2.SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, rendererId.minor_version) < 0)
-                {
-                    _log.Error($"Failed to set probe-time OpenGL minor version attribute: {SDL2.SDL_GetError()}");
-                    return false;
-                }
+            if (SDL2.SDL_GL_SetAttribute(
+                    SDL2.SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, rendererId.minor_version) < 0)
+            {
+                _log.Error($"Failed to set probe-time OpenGL minor version attribute: {SDL2.SDL_GetError()}");
+                return false;
+            }
 
-                if (SDL2.SDL_GL_SetAttribute(
-                        SDL2.SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, SDL2.SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE) <
-                    0)
-                {
-                    _log.Error($"Failed to set probe-time OpenGL core profile preference: {SDL2.SDL_GetError()}");
-                    return false;
-                }
+            if (SDL2.SDL_GL_SetAttribute(
+                    SDL2.SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, SDL2.SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE) <
+                0)
+            {
+                _log.Error($"Failed to set probe-time OpenGL core profile preference: {SDL2.SDL_GetError()}");
+                return false;
             }
 
             var window = SDL2.SDL_CreateWindow(

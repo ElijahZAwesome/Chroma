@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Chroma.NALO;
+using Chroma.NALO.PlatformSpecific.Utils;
 using Chroma.Natives.Bindings.SDL;
 using Chroma.Natives.Boot.Config;
 using Chroma.Natives.Syscalls;
@@ -132,7 +133,7 @@ namespace Chroma.Natives.Boot
             }
             
             EarlyLog.Info("Handing over to the core. " +
-                          $"Its log will be located somewhere in {AppContext.BaseDirectory}Logs...");
+                          $"Its log will be located somewhere in {Path.Combine(FileSystemUtils.BaseDirectory, "Logs")}...");
             Console.WriteLine("---");
         }
     }

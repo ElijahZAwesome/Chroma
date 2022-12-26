@@ -24,7 +24,7 @@ namespace InstancedSoundPlayback
         protected override IContentProvider InitializeContentPipeline()
         {
             var pipeline = new FileSystemContentProvider(
-                Path.Combine(AppContext.BaseDirectory, "../../../../_common")
+                Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );
 
             pipeline.RegisterImporter<InstancedSound>((path, _) => new InstancedSound(path));

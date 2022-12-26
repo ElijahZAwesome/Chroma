@@ -1,4 +1,5 @@
 using Android.Content.PM;
+using Android.Content.Res;
 using Android.Views;
 using Org.Libsdl.App;
 
@@ -26,6 +27,17 @@ public class MainActivity : SDLActivity
     {
         base.LoadLibraries();
         Bootstrap.SetupMain();
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        Bootstrap.Quit();
+        base.Dispose(disposing);
+    }
+
+    public override void OnConfigurationChanged(Configuration newConfig)
+    {
+        base.OnConfigurationChanged(newConfig);
     }
 
     public override void OnWindowFocusChanged(bool hasFocus)

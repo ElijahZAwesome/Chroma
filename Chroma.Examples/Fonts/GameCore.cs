@@ -31,7 +31,7 @@ namespace Fonts
         protected override IContentProvider InitializeContentPipeline()
         {
             return new FileSystemContentProvider(
-                Path.Combine(AppContext.BaseDirectory, "../../../../_common")
+                Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );
         }
 
