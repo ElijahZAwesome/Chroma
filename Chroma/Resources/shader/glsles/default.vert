@@ -1,4 +1,5 @@
-#version 330 core
+#version 310 es
+precision mediump float;
 
 in vec3 gpu_VertexPosition;
 in vec4 gpu_VertexColor;

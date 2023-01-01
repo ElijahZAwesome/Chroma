@@ -5,6 +5,7 @@ using System.Numerics;
 using Chroma;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Graphics;
 using Chroma.Graphics.TextRendering.Bitmap;
 using Chroma.Graphics.TextRendering.TrueType;
@@ -30,6 +31,9 @@ namespace Fonts
 
         protected override IContentProvider InitializeContentPipeline()
         {
+            if (OperatingSystem.IsAndroid())
+                return base.InitializeContentPipeline();
+            
             return new FileSystemContentProvider(
                 Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );

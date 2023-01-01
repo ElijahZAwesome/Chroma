@@ -4,6 +4,7 @@ using System.IO;
 using Chroma;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Graphics;
 using Chroma.Graphics.TextRendering.TrueType;
 using Chroma.Input;
@@ -40,6 +41,9 @@ namespace TextInput
 
         protected override IContentProvider InitializeContentPipeline()
         {
+            if (OperatingSystem.IsAndroid())
+                return base.InitializeContentPipeline();
+            
             return new FileSystemContentProvider(
                 Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );
@@ -47,12 +51,7 @@ namespace TextInput
 
         protected override void LoadContent()
         {
-            using var fs = new FileStream(
-                Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common/Fonts/dos8x14.ttf"),
-                FileMode.Open
-            );
-
-            _font = new TrueTypeFont(fs, 16);
+            _font = Content.Load<TrueTypeFont>("Fonts/dos8x14.ttf", 16);
             _font.PreferAutoHinter = true;
 
             Window.SizeChanged += (_, _) => { InitializeDisplay(); };

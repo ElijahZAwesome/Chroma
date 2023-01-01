@@ -10,7 +10,7 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0;net6.0-android</TargetFrameworks>
     <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   
@@ -59,11 +59,14 @@
     </ProjectReference>
   </ItemGroup>
 
+  <!-- This is done to stop Xamarin from adding our EmbeddedResources as AndroidResources. -->
+  <!-- To my knowledge this folder does not actually need to exist, so for now it's just this. -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+    <MonoAndroidResourcePrefix>AndroidResources</MonoAndroidResourcePrefix>
+  </PropertyGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="Resources\logo.png" />
-    <EmbeddedResource Include="Resources\shader\default.frag" />
-    <EmbeddedResource Include="Resources\shader\default.vert" />
-    <EmbeddedResource Include="Resources\shader\default_effect.frag" />
     <EmbeddedResource Include="Resources\default.ttf" />
     <EmbeddedResource Include="Resources\beta.png" />
     <EmbeddedResource Include="Resources\deficon.png" />
@@ -72,5 +75,8 @@
     <EmbeddedResource Include="Resources\boot\crlogo.png" />
     <EmbeddedResource Include="Resources\boot\crsub.png" />
     <EmbeddedResource Include="Resources\boot\crwheel.png" />
+    <EmbeddedResource Include="Resources\shader\*\default.frag" />
+    <EmbeddedResource Include="Resources\shader\*\default.vert" />
+    <EmbeddedResource Include="Resources\shader\*\default_effect.frag" />
   </ItemGroup>
 </Project>

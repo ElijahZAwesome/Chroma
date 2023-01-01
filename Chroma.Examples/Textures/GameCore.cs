@@ -5,6 +5,7 @@ using System.Numerics;
 using Chroma;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Diagnostics;
 using Chroma.Graphics;
 using Chroma.Input;
@@ -45,6 +46,9 @@ namespace Textures
 
         protected override IContentProvider InitializeContentPipeline()
         {
+            if (OperatingSystem.IsAndroid())
+                return base.InitializeContentPipeline();
+            
             return new FileSystemContentProvider(
                 Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );

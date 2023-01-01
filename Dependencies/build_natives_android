@@ -106,7 +106,8 @@ cd $SDL_PATH/build-scripts \
 && cp $SCRIPT_DIR/lib/sdl2droid-cs-wrapper.c ./ \
 && cp $SCRIPT_DIR/lib/sdl2droid-cs-wrapper.h ./ \
 && cd $SDL_PATH/build/org.libsdl/app/jni/SDL_gpu/ \
-&& sed -i "s/^LOCAL_CFLAGS += -DSDL_GPU_DISABLE_GLES_3.*/LOCAL_CFLAGS += -DSDL_GPU_DISABLE_GLES_3 -DSDL_GPU_DISABLE_GLES_1/" ./Android.mk \
+&& sed -i "s/^LOCAL_CFLAGS += -DSDL_GPU_DISABLE_GLES.*/LOCAL_CFLAGS += -DSDL_GPU_DISABLE_GLES_1 -DSDL_GPU_DISABLE_GLES_2/" ./Android.mk \
+&& sed -i "s/^LOCAL_LDLIBS += -lGLESv2.*/LOCAL_LDLIBS += -lGLESv3/" ./Android.mk \
 && cd $SDL_PATH/build/org.libsdl/app/jni/ \
 && sed -i "s/^APP_PLATFORM=.*/APP_PLATFORM=android-31/" ./Application.mk \
 && ndk-build -j$(nproc)

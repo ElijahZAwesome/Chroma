@@ -1,11 +1,11 @@
 using System;
-using System.Drawing;
 using System.IO;
 using System.Numerics;
 using Chroma;
 using Chroma.Audio.Sources;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Graphics;
 using Chroma.Graphics.Accelerated;
 using Chroma.Input;
@@ -40,11 +40,15 @@ namespace BoingBall
         public GameCore()
             : base(new(false, false))
         {
-            Window.Mode.SetWindowed(960, 600, true);
+            if (!OperatingSystem.IsAndroid())
+                Window.Mode.SetWindowed(960, 600, true);
         }
 
         protected override IContentProvider InitializeContentPipeline()
         {
+            if (OperatingSystem.IsAndroid())
+                return base.InitializeContentPipeline();
+
             return new FileSystemContentProvider(
                 Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );
@@ -67,7 +71,7 @@ namespace BoingBall
             _cursor = Content.Load<Cursor>("Cursors/ami13.png");
             _cursor.SetCurrent();
 
-            _effect = Content.Load<Effect>("Shaders/distort.frag");
+            _effect = Content.Load<Effect>($"Shaders/{Shader.SupportedShaderLanguage.ToString().ToLower()}/distort.frag");
             _bounce1 = Content.Load<Sound>("Sounds/bounce1.ogg");
             _bounce2 = Content.Load<Sound>("Sounds/bounce2.ogg");
         }

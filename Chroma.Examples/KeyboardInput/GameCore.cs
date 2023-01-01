@@ -4,6 +4,7 @@ using System.Numerics;
 using Chroma;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Graphics;
 using Chroma.Input;
 using Color = Chroma.Graphics.Color;
@@ -29,6 +30,9 @@ namespace KeyboardInput
 
         protected override IContentProvider InitializeContentPipeline()
         {
+            if (OperatingSystem.IsAndroid())
+                return base.InitializeContentPipeline();
+
             return new FileSystemContentProvider(
                 Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );

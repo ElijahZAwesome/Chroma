@@ -1,17 +1,22 @@
-#version 330 core
+#version 310 es
+precision mediump float;
+
+out vec4 _FragColor;
 
 in float cr_Time;
 uniform sampler2D cr_Texture;
 
-uniform float aspect = 1.0;
-uniform float distortion = 1.0;
-uniform float radius = 1.2;
-uniform float alpha = 1.0;
-uniform float crop = 1.0;
-uniform vec4 crop_color = vec4(0, 0, 0, 0);
-uniform float texshift = 0.0;
-uniform int mode = 0;
-uniform float z_mul = 1.5;
+const float aspect = 1.0;
+const float distortion = 1.0;
+const float radius = 1.2;
+const float alpha = 1.0;
+const float crop = 1.0;
+uniform vec4 crop_color;
+uniform float texshift;
+uniform int mode;
+const float z_mul = 1.5;
+
+in vec2 cr_TexCoord;
 
 vec2 distort(vec2 p)
 {
@@ -29,7 +34,7 @@ vec2 distort(vec2 p)
 }
 
 vec4 effect(vec4 pixel, vec2 texcoord) {
-    vec2 xy = texcoord * 2 - 1.0;
+    vec2 xy = texcoord * 2.0 - 1.0;
     xy = vec2(xy.x * aspect, xy.y);
     float d = length(xy);
 
@@ -67,4 +72,11 @@ vec4 effect(vec4 pixel, vec2 texcoord) {
     }
 
     return pixel;
+}
+
+void main(void) {
+    _FragColor = effect(
+    texture(cr_Texture, cr_TexCoord),
+    cr_TexCoord
+    );
 }

@@ -17,6 +17,21 @@ namespace Chroma.Graphics.Accelerated
         internal uint PixelShaderObjectHandle;
 
         internal SDL_gpu.GPU_ShaderBlock Block;
+        
+        public static ShaderLanguage SupportedShaderLanguage
+        {
+            get
+            {
+                SDL_gpu.GPU_Renderer renderer;
+
+                unsafe
+                {
+                    renderer = *((SDL_gpu.GPU_Renderer*)SDL_gpu.GPU_GetCurrentRenderer().ToPointer());
+                }
+
+                return (ShaderLanguage)renderer.shader_language;
+            }
+        }
 
         public static int MinimumSupportedGlslVersion
         {
@@ -409,7 +424,7 @@ namespace Chroma.Graphics.Accelerated
             EnsureNotDisposed();
 
             var shaderSourceStream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("Chroma.Resources.shader.default.vert");
+                .GetManifestResourceStream($"Chroma.Resources.shader.{SupportedShaderLanguage.ToString().ToLower()}.default.vert");
 
             using var sr = new StreamReader(shaderSourceStream!);
             VertexShaderObjectHandle =
@@ -421,7 +436,7 @@ namespace Chroma.Graphics.Accelerated
             EnsureNotDisposed();
 
             var shaderSourceStream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("Chroma.Resources.shader.default.frag");
+                .GetManifestResourceStream($"Chroma.Resources.shader.{SupportedShaderLanguage.ToString().ToLower()}.default.frag");
 
             using var sr = new StreamReader(shaderSourceStream!);
             PixelShaderObjectHandle =

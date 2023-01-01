@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Reflection;
 using Chroma.Audio;
 using Chroma.ContentManagement;
-using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Diagnostics;
 using Chroma.Diagnostics.Logging;
 using Chroma.Extensibility;
@@ -20,6 +21,7 @@ namespace Chroma
         private static DefaultScene _defaultScene;
         private static BootScene _bootScene;
         private int _fixedTimeStepTarget;
+        private Assembly _callingAssembly;
 
         private static readonly Log _log = LogManager.GetForCurrentAssembly();
 
@@ -79,6 +81,8 @@ namespace Chroma
             AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
 
             HookRegistry.Initialize(this);
+
+            _callingAssembly = Assembly.GetCallingAssembly();
         }
 
         public void Run()
@@ -120,7 +124,10 @@ namespace Chroma
 
         protected virtual IContentProvider InitializeContentPipeline()
         {
-            return new FileSystemContentProvider();
+            if (OperatingSystem.IsAndroid())
+                return new EmbeddedResourceContentProvider(_callingAssembly);
+            else
+                return new FileSystemContentProvider();
         }
 
         protected virtual void LoadContent()

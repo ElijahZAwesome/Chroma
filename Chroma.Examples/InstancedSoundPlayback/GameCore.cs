@@ -4,6 +4,7 @@ using Chroma;
 using Chroma.Audio;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Graphics;
 using Chroma.Input;
 
@@ -23,9 +24,14 @@ namespace InstancedSoundPlayback
 
         protected override IContentProvider InitializeContentPipeline()
         {
-            var pipeline = new FileSystemContentProvider(
-                Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
-            );
+            IContentProvider pipeline; 
+            
+            if (OperatingSystem.IsAndroid())
+                pipeline = base.InitializeContentPipeline();
+            else
+                pipeline = new FileSystemContentProvider(
+                    Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
+                );
 
             pipeline.RegisterImporter<InstancedSound>((path, _) => new InstancedSound(path));
             

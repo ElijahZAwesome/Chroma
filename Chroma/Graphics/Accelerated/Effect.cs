@@ -93,7 +93,7 @@ namespace Chroma.Graphics.Accelerated
             EnsureNotDisposed();
 
             var shaderSourceStream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("Chroma.Resources.shader.default_effect.frag");
+                .GetManifestResourceStream($"Chroma.Resources.shader.{SupportedShaderLanguage.ToString().ToLower()}.default_effect.frag");
 
             using var sr = new StreamReader(shaderSourceStream!);
             PixelShaderObjectHandle =

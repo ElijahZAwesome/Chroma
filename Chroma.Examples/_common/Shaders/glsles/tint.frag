@@ -1,4 +1,5 @@
-#version 330 core
+#version 310 es
+precision mediump float;
 
 in float cr_Time;
 in vec2 cr_ScreenSize;
@@ -10,8 +11,8 @@ uniform bool show_edge = true;
 uniform bool show_overlay = true;
 uniform bool show_tweak = true;
 
-uniform vec2 mouse_loc = vec2(0);
-uniform vec4 border_color = vec4(0);
+uniform vec2 mouse_loc;
+uniform vec4 border_color;
 
 vec4 effect(vec4 pixel, vec2 tex_coords) {
   vec4 ret = vec4(pixel);

@@ -1,3 +1,6 @@
 ﻿using WindowOperations;
 
-new GameCore().Run();
+internal class Program
+{
+    public static void Main(string[] args) => new GameCore().Run();
+}

@@ -1,7 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
+using System.Reflection;
+using System.Text;
 using Chroma.Audio.Sources;
 using Chroma.Graphics;
 using Chroma.Graphics.Accelerated;
@@ -10,22 +13,27 @@ using Chroma.Graphics.TextRendering.TrueType;
 using Chroma.Input;
 using Chroma.MemoryManagement;
 
-namespace Chroma.ContentManagement.FileSystem
+namespace Chroma.ContentManagement.FileSystem.ContentProviders
 {
-    public class FileSystemContentProvider : DisposableResource, IContentProvider
+    public class EmbeddedResourceContentProvider : DisposableResource, IContentProvider
     {
         private readonly HashSet<DisposableResource> _loadedResources;
         private readonly Dictionary<Type, Func<string, object[], object>> _importers;
 
+        private string _namespace;
+        private Assembly _assembly;
+
         public string ContentRoot { get; }
 
-        public FileSystemContentProvider(string contentRoot = null)
+        public EmbeddedResourceContentProvider(Assembly assembly, string contentRoot = null)
         {
             ContentRoot = contentRoot;
+            _namespace = assembly.GetName().Name;
+            _assembly = assembly;
 
             if (string.IsNullOrEmpty(ContentRoot))
             {
-                ContentRoot = Path.Combine(FileSystemUtils.BaseDirectory, "Content");
+                ContentRoot = "Content";
             }
 
             _loadedResources = new HashSet<DisposableResource>();
@@ -66,11 +74,23 @@ namespace Chroma.ContentManagement.FileSystem
             resource.Dispose();
         }
 
+        private string ConvertToManifestPath(string filePath) => Path.GetFullPath(filePath).Replace('/', '.').TrimStart('.');
+
+        private string GetQualifiedManifestPath(string relativePath) 
+            => $"{_namespace}.{ConvertToManifestPath(relativePath)}";
+        
         public Stream Open(string relativePath)
-            => new FileStream(MakeAbsolutePath(relativePath), FileMode.Open);
+            => OpenEmbeddedResource(GetQualifiedManifestPath(relativePath));
+
+        private Stream OpenEmbeddedResource(string qualifiedPath)
+            => _assembly.GetManifestResourceStream(qualifiedPath);
 
         public byte[] Read(string relativePath)
-            => File.ReadAllBytes(MakeAbsolutePath(relativePath));
+        {
+            using var mem = new MemoryStream();
+            _assembly.GetManifestResourceStream(GetQualifiedManifestPath(relativePath))!.CopyTo(mem);
+            return mem.ToArray();
+        }
 
         public void Track<T>(T resource) where T : DisposableResource
         {
@@ -94,7 +114,7 @@ namespace Chroma.ContentManagement.FileSystem
         public void RegisterImporter<T>(Func<string, object[], object> importer) where T : DisposableResource
         {
             var contentType = typeof(T);
-            
+
             if (_importers.ContainsKey(contentType))
             {
                 throw new InvalidOperationException(
@@ -131,13 +151,37 @@ namespace Chroma.ContentManagement.FileSystem
 
         private void RegisterImporters()
         {
-            RegisterImporter<Texture>((path, _) => new Texture(path));
-            RegisterImporter<PixelShader>((path, _) => PixelShader.FromFile(path));
-            RegisterImporter<VertexShader>((path, _) => VertexShader.FromFile(path));
-            RegisterImporter<Effect>((path, _) => Effect.FromFile(path));
-            RegisterImporter<BitmapFont>((path, _) => new BitmapFont(path));
-            RegisterImporter<Sound>((path, _) => new Sound(path));
-            RegisterImporter<Music>((path, _) => new Music(path));
+            RegisterImporter<Texture>((path, _) =>
+            {
+                using var stream = Open(path);
+                return new Texture(stream);
+            });
+            RegisterImporter<PixelShader>((path, _) => new PixelShader(Encoding.ASCII.GetString(Read(path))));
+            RegisterImporter<VertexShader>((path, _) => new VertexShader(Encoding.ASCII.GetString(Read(path))));
+            RegisterImporter<Effect>((path, _) => new Effect(Encoding.ASCII.GetString(Read(path))));
+            RegisterImporter<BitmapFont>((path, _) =>
+            {
+                using var stream = Open(path);
+                return new BitmapFont(path, stream, (texFileName) =>
+                {
+                    var basePathParts = GetQualifiedManifestPath(path).Split('.').Take(..^2);
+
+                    var texEmbeddedResourcePath = string.Join('.', basePathParts) + $".{texFileName}";
+
+                    using var textureStream = OpenEmbeddedResource(texEmbeddedResourcePath);
+                    return new Texture(textureStream);
+                });
+            });
+            RegisterImporter<Sound>((path, _) =>
+            {
+                using var stream = Open(path);
+                return new Sound(stream);
+            });
+            RegisterImporter<Music>((path, _) =>
+            {
+                using var stream = Open(path);
+                return new Music(stream);
+            });
 
             RegisterImporter<Cursor>((path, args) =>
             {
@@ -146,24 +190,26 @@ namespace Chroma.ContentManagement.FileSystem
                 if (args.Length >= 1)
                     hotSpot = (Vector2)args[0];
 
-                var cursor = new Cursor(path, hotSpot);
+                using var textureStream = Open(path);
+                var cursor = new Cursor(new Texture(textureStream), hotSpot);
                 return cursor;
             });
 
             RegisterImporter<TrueTypeFont>((path, args) =>
             {
                 TrueTypeFont ttf;
+                using var stream = Open(path);
                 if (args.Length == 2)
                 {
-                    ttf = new TrueTypeFont(path, (int)args[0], (string)args[1]);
+                    ttf = new TrueTypeFont(stream, (int)args[0], (string)args[1]);
                 }
                 else if (args.Length == 1)
                 {
-                    ttf = new TrueTypeFont(path, (int)args[0]);
+                    ttf = new TrueTypeFont(stream, (int)args[0]);
                 }
                 else
                 {
-                    ttf = new TrueTypeFont(path, 12);
+                    ttf = new TrueTypeFont(stream, 12);
                 }
 
                 return ttf;

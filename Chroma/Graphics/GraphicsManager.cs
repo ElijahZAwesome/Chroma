@@ -184,7 +184,7 @@ namespace Chroma.Graphics
             );
 
             var msaaSamples = _startupOptions.MsaaSamples;
-            if (msaaSamples > 0)
+            if (msaaSamples > 0 && !OperatingSystem.IsAndroid()) // TODO: MSAA is broken on android
             {
                 if (msaaSamples > MaximumMSAA)
                 {
@@ -295,11 +295,6 @@ namespace Chroma.Graphics
 
         private bool ProbeGlLimits(SDL_gpu.GPU_RendererID rendererId, Func<bool> probeLogic)
         {
-            // TODO Determine if this is actually needed as obviously we'd rather have sanity checking than not.
-            // Currently to my understanding, creating extra windows is asking for trouble.
-            if (OperatingSystem.IsAndroid())
-                return true;
-
             if (SDL2.SDL_GL_SetAttribute(
                     SDL2.SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, rendererId.major_version) < 0)
             {
@@ -321,6 +316,11 @@ namespace Chroma.Graphics
                 _log.Error($"Failed to set probe-time OpenGL core profile preference: {SDL2.SDL_GetError()}");
                 return false;
             }
+            
+            // TODO Determine if this is actually needed as obviously we'd rather have sanity checking than not.
+            // Currently to my understanding, creating extra windows is asking for trouble.
+            if (OperatingSystem.IsAndroid())
+                return true;
 
             var window = SDL2.SDL_CreateWindow(
                 "Chroma Probe Window",

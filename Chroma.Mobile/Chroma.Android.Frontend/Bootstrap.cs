@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using Android.Util;
 
 namespace Chroma.Android.Frontend;
 
@@ -12,9 +11,7 @@ static class Bootstrap
     public static void SDL_Main()
     {
         MainActivity.Fullscreen = true;
-        MainActivity.ActivityInstance.RunOnUiThread(MainActivity.ActivityInstance.ActionBar.Hide);
-        DisplayMetrics metrics = new DisplayMetrics();
-        MainActivity.ActivityInstance.WindowManager.DefaultDisplay.GetMetrics(metrics);
+        MainActivity.ActivityInstance.RunOnUiThread(MainActivity.ActivityInstance.ActionBar!.Hide);
         Game = new Game();
         Game.Run();
     }

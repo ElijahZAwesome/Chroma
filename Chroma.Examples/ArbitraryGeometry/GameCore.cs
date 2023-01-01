@@ -4,9 +4,9 @@ using System.Numerics;
 using Chroma;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Graphics;
 using Chroma.Graphics.Accelerated;
-using Chroma.Graphics.TextRendering;
 using Chroma.Graphics.TextRendering.TrueType;
 
 namespace ArbitraryGeometry
@@ -67,7 +67,7 @@ namespace ArbitraryGeometry
             _texture = new Texture(1, 1);
             _texture[0, 0] = Color.White;
 
-            _ps = Content.Load<PixelShader>("Shaders/untextured.frag");
+            _ps = Content.Load<PixelShader>($"Shaders/{Shader.SupportedShaderLanguage.ToString().ToLower()}/untextured.frag");
         }
 
         private void With3D(Action action)
@@ -98,6 +98,9 @@ namespace ArbitraryGeometry
 
         protected override IContentProvider InitializeContentPipeline()
         {
+            if (OperatingSystem.IsAndroid())
+                return base.InitializeContentPipeline();
+
             return new FileSystemContentProvider(
                 Path.Combine(
                     FileSystemUtils.BaseDirectory, 
@@ -105,7 +108,6 @@ namespace ArbitraryGeometry
                 )
             );
         }
-
 
         protected override void Update(float delta)
         {

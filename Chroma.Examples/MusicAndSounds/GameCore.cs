@@ -4,13 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using Chroma;
 using Chroma.Audio;
 using Chroma.Audio.Sources;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Diagnostics.Logging;
 using Chroma.Graphics;
 using Chroma.Input;
@@ -52,6 +51,9 @@ namespace MusicAndSounds
 
         protected override IContentProvider InitializeContentPipeline()
         {
+            if (OperatingSystem.IsAndroid())
+                return base.InitializeContentPipeline();
+
             return new FileSystemContentProvider(
                 Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );

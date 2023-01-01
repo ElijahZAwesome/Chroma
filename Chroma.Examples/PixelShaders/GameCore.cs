@@ -6,6 +6,7 @@ using System.Text;
 using Chroma;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Diagnostics;
 using Chroma.Diagnostics.Logging;
 using Chroma.Graphics;
@@ -43,6 +44,9 @@ namespace PixelShaders
 
         protected override IContentProvider InitializeContentPipeline()
         {
+            if (OperatingSystem.IsAndroid())
+                return base.InitializeContentPipeline();
+
             return new FileSystemContentProvider(
                 Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );
@@ -51,7 +55,7 @@ namespace PixelShaders
         protected override void LoadContent()
         {
             _target = new RenderTarget(Window.Size);
-            _tintEffect = Content.Load<Effect>("Shaders/tint.frag");
+            _tintEffect = Content.Load<Effect>($"Shaders/{Shader.SupportedShaderLanguage.ToString().ToLower()}/tint.frag");
             _burger = Content.Load<Texture>("Textures/burg.png");
             _burger.FilteringMode = TextureFilteringMode.NearestNeighbor;
 

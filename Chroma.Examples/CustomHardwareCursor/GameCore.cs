@@ -4,6 +4,7 @@ using System.Numerics;
 using Chroma;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
+using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Graphics;
 using Chroma.Input;
 
@@ -23,6 +24,9 @@ namespace CustomHardwareCursor
             // but there is more than one example project
             // so sharing between them is necessary to keep the
             // source tree clean
+            if (OperatingSystem.IsAndroid())
+                return base.InitializeContentPipeline();
+
             return new FileSystemContentProvider(
                 Path.Combine(FileSystemUtils.BaseDirectory, "../../../../_common")
             );
