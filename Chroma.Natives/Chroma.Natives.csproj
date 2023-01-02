@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFrameworks>net6.0;net6.0-android</TargetFrameworks>
         <LangVersion>10.0</LangVersion>
+        <Android Condition="$(TargetFramework.Contains('-android'))">true</Android>
+        <RuntimeIdentifiers Condition="$(Android) != ''">android-arm64;android-x64</RuntimeIdentifiers>
     </PropertyGroup>
     
     <PropertyGroup>
@@ -11,7 +13,7 @@
     </PropertyGroup>
 
     <!-- Order of natives is important! -->
-    <ItemGroup>
+    <ItemGroup Condition="$(Android) == ''">
         <EmbeddedResource Include="Binaries\windows_64\freetype.bz2" />
         <EmbeddedResource Include="Binaries\windows_64\SDL2.bz2" />
         <EmbeddedResource Include="Binaries\windows_64\SDL2_gpu.bz2" />
@@ -26,7 +28,52 @@
         <EmbeddedResource Include="Binaries\osx_64\libSDL2.bz2" />
         <EmbeddedResource Include="Binaries\osx_64\libSDL2_gpu.bz2" />
         <EmbeddedResource Include="Binaries\osx_64\libSDL2_sound.bz2" />
+    </ItemGroup>
 
+    <ItemGroup Condition="$(Android) != ''">
+        <EmbeddedNativeLibrary Include="Binaries\android\arm64-v8a\libSDL2.so">
+            <Abi>arm64-v8a</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        <EmbeddedNativeLibrary Include="Binaries\android\arm64-v8a\libmain.so">
+            <Abi>arm64-v8a</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        <EmbeddedNativeLibrary Include="Binaries\android\arm64-v8a\libSDL2_sound.so">
+            <Abi>arm64-v8a</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        <EmbeddedNativeLibrary Include="Binaries\android\arm64-v8a\libSDL2_gpu.so">
+            <Abi>arm64-v8a</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        <EmbeddedNativeLibrary Include="Binaries\android\arm64-v8a\libfreetype.so">
+            <Abi>arm64-v8a</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        <EmbeddedNativeLibrary Include="Binaries\android\x86_64\libSDL2.so">
+            <Abi>x86_64</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        <EmbeddedNativeLibrary Include="Binaries\android\x86_64\libmain.so">
+            <Abi>x86_64</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        <EmbeddedNativeLibrary Include="Binaries\android\x86_64\libSDL2_sound.so">
+            <Abi>x86_64</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        <EmbeddedNativeLibrary Include="Binaries\android\x86_64\libSDL2_gpu.so">
+            <Abi>x86_64</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        <EmbeddedNativeLibrary Include="Binaries\android\x86_64\libfreetype.so">
+            <Abi>x86_64</Abi>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedNativeLibrary>
+        
+        <EmbeddedJar Include="Binaries\android\jni\Chroma.Android.Native.jar" />
+        <TransformFile Include="Binaries\android\jni\Metadata.xml" />
     </ItemGroup>
 
     <ItemGroup>

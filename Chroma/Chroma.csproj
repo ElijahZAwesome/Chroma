@@ -12,6 +12,8 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;net6.0-android</TargetFrameworks>
     <LangVersion>10.0</LangVersion>
+    <Android Condition="$(TargetFramework.Contains('-android'))">true</Android>
+    <RuntimeIdentifiers Condition="$(Android) != ''">android-arm64;android-x64</RuntimeIdentifiers>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -61,7 +63,7 @@
 
   <!-- This is done to stop Xamarin from adding our EmbeddedResources as AndroidResources. -->
   <!-- To my knowledge this folder does not actually need to exist, so for now it's just this. -->
-  <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+  <PropertyGroup Condition="$(Android) != ''">
     <MonoAndroidResourcePrefix>AndroidResources</MonoAndroidResourcePrefix>
   </PropertyGroup>
 

@@ -50,6 +50,10 @@ namespace Chroma
             _log.LogLevel = LogLevel.Info | LogLevel.Warning | LogLevel.Error;
 #endif
 
+#if ANDROID // TODO: This is really ugly but it has to be deferred here so that SDLActivity can init.
+            ModuleInitializer.Initialize();
+#endif
+
             if (WasConstructed)
             {
                 throw new InvalidOperationException(

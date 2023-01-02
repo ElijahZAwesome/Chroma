@@ -2,7 +2,8 @@
     <PropertyGroup>
         <TargetFramework>net6.0-android</TargetFramework>
         <SupportedOSPlatformVersion>31</SupportedOSPlatformVersion>
-        <PlatformTargets>x64;arm64</PlatformTargets>
+        <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
+        <PublishTrimmed>false</PublishTrimmed>
         <OutputType>Exe</OutputType>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -15,49 +16,5 @@
       <ProjectReference Include="..\..\Chroma.Natives\Chroma.Natives.csproj" />
       <ProjectReference Include="..\..\Chroma.STB\Chroma.STB.csproj" />
       <ProjectReference Include="..\..\Chroma\Chroma.csproj" />
-      <ProjectReference Include="..\Chroma.Android.Bindings\Chroma.Android.Bindings.csproj" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <AndroidNativeLibrary Include="libs\arm64-v8a\libSDL2.so">
-            <Abi>arm64-v8a</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
-        <AndroidNativeLibrary Include="libs\arm64-v8a\libmain.so">
-            <Abi>arm64-v8a</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
-        <AndroidNativeLibrary Include="libs\arm64-v8a\libSDL2_sound.so">
-            <Abi>arm64-v8a</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
-        <AndroidNativeLibrary Include="libs\arm64-v8a\libSDL2_gpu.so">
-            <Abi>arm64-v8a</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
-        <AndroidNativeLibrary Include="libs\arm64-v8a\libfreetype.so">
-            <Abi>arm64-v8a</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
-        <AndroidNativeLibrary Include="libs\x86_64\libSDL2.so">
-            <Abi>x86_64</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
-        <AndroidNativeLibrary Include="libs\x86_64\libmain.so">
-            <Abi>x86_64</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
-        <AndroidNativeLibrary Include="libs\x86_64\libSDL2_sound.so">
-            <Abi>x86_64</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
-        <AndroidNativeLibrary Include="libs\x86_64\libSDL2_gpu.so">
-            <Abi>x86_64</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
-        <AndroidNativeLibrary Include="libs\x86_64\libfreetype.so">
-            <Abi>x86_64</Abi>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </AndroidNativeLibrary>
     </ItemGroup>
 </Project>
