@@ -1,8 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <TargetFrameworks>net6.0;net6.0-android</TargetFrameworks>
-        <OutputType Condition="$(TargetFramework.Contains('-android'))">Library</OutputType>
-        <OutputType Condition="$(TargetFramework) == 'net6.0'">Exe</OutputType>
+        <Android Condition="$(TargetFramework.Contains('-android'))">true</Android>
+        <OutputType Condition="$(Android) != ''">Library</OutputType>
+        <OutputType Condition="$(Android) == ''">Exe</OutputType>
     </PropertyGroup>
     
     <ItemGroup>
