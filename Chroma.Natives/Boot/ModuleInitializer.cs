@@ -124,10 +124,6 @@ namespace Chroma.Natives.Boot
 
         private static void InitializeSdlSystems()
         {
-            // SDLActivity does this for us.
-            if (OperatingSystem.IsAndroid())
-                return;
-            
             SDL2.SDL_GetVersion(out var sdlVersion);
             EarlyLog.Info($"Initializing SDL {sdlVersion.major}.{sdlVersion.minor}.{sdlVersion.patch}");
 

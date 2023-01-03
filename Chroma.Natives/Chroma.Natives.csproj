@@ -4,7 +4,6 @@
         <TargetFrameworks>net6.0;net6.0-android</TargetFrameworks>
         <LangVersion>10.0</LangVersion>
         <Android Condition="$(TargetFramework.Contains('-android'))">true</Android>
-        <RuntimeIdentifiers Condition="$(Android) != ''">android-arm64;android-x64</RuntimeIdentifiers>
     </PropertyGroup>
     
     <PropertyGroup>
