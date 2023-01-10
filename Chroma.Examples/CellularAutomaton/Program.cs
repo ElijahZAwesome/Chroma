@@ -1,4 +1,4 @@
-﻿using CellularAutomaton;
+﻿namespace CellularAutomaton;
 
 internal class Program
 {

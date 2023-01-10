@@ -1,4 +1,4 @@
-using InstancedSoundPlayback;
+namespace InstancedSoundPlayback;
 
 internal class Program
 {

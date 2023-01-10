@@ -1,4 +1,4 @@
-﻿using Textures;
+﻿namespace Textures;
 
 internal class Program
 {

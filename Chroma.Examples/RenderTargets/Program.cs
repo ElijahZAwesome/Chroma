@@ -1,4 +1,4 @@
-﻿using RenderTargets;
+﻿namespace RenderTargets;
 
 internal class Program
 {

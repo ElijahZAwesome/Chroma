@@ -1,18 +1,19 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <TargetFrameworks>net6.0;net6.0-android</TargetFrameworks>
-        <Android Condition="$(TargetFramework.Contains('-android'))">true</Android>
-        <OutputType Condition="$(Android) != ''">Library</OutputType>
-        <OutputType Condition="$(Android) == ''">Exe</OutputType>
+        <OutputType>Exe</OutputType>
+        <AndroidManifest>..\_common\AndroidManifest.xml</AndroidManifest>
     </PropertyGroup>
     
     <ItemGroup>
         <ProjectReference Include="..\..\Chroma\Chroma.csproj" />
     </ItemGroup>
     
-    <ItemGroup Condition="$(OutputType) != Exe">
-        <EmbeddedResource Include="..\_common\**">
-            <Link>Content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    <ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+        <Compile Include="..\_common\GameActivity.cs" />
+        <Compile Include="..\_common\AssemblyInfo.cs" />
+        <EmbeddedResource Include="..\_common\Content\**">
+            <Link>\%(RecursiveDir)%(Filename)%(Extension)</Link>
         </EmbeddedResource>
     </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿using Clipboard;
+﻿namespace Clipboard;
 
 internal class Program
 {

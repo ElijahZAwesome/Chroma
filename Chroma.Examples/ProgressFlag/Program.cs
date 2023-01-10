@@ -1,4 +1,4 @@
-using ProgressFlag;
+namespace ProgressFlag;
 
 internal class Program
 {

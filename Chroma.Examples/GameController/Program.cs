@@ -1,4 +1,4 @@
-﻿using GameController;
+﻿namespace GameController;
 
 internal class Program
 {

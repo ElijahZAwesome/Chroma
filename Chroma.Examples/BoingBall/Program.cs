@@ -1,4 +1,4 @@
-﻿using BoingBall;
+﻿namespace BoingBall;
 
 internal class Program
 {

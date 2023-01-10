@@ -1,4 +1,4 @@
-﻿using DrawBatching;
+﻿namespace DrawBatching;
 
 internal class Program
 {

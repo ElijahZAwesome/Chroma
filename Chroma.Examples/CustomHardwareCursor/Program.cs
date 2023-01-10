@@ -1,4 +1,4 @@
-﻿using CustomHardwareCursor;
+﻿namespace CustomHardwareCursor;
 
 internal class Program
 {

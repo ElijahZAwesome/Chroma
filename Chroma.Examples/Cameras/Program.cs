@@ -1,4 +1,4 @@
-﻿using Cameras;
+﻿namespace Cameras;
 
 internal class Program
 {

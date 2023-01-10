@@ -1,4 +1,4 @@
-﻿using GlyphTransforms;
+﻿namespace GlyphTransforms;
 
 internal class Program
 {

@@ -1,4 +1,4 @@
-﻿using WindowOperations;
+﻿namespace WindowOperations;
 
 internal class Program
 {

@@ -1,4 +1,4 @@
-﻿using TextInput;
+﻿namespace TextInput;
 
 internal class Program
 {

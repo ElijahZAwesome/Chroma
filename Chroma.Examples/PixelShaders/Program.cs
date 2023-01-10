@@ -1,4 +1,4 @@
-﻿using PixelShaders;
+﻿namespace PixelShaders;
 
 internal class Program
 {

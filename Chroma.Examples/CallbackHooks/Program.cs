@@ -1,4 +1,4 @@
-﻿using CallbackHooks;
+﻿namespace CallbackHooks;
 
 internal class Program
 {

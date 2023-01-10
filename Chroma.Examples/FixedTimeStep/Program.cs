@@ -1,4 +1,4 @@
-﻿using FixedTimeStep;
+﻿namespace FixedTimeStep;
 
 internal class Program
 {

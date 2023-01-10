@@ -3,8 +3,8 @@ using System.IO;
 using Chroma;
 using Chroma.Audio;
 using Chroma.ContentManagement;
+using Chroma.ContentManagement.ContentProviders;
 using Chroma.ContentManagement.FileSystem;
-using Chroma.ContentManagement.FileSystem.ContentProviders;
 using Chroma.Graphics;
 using Chroma.Input;
 

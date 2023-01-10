@@ -1,4 +1,4 @@
-﻿using MusicAndSounds;
+﻿namespace MusicAndSounds;
 
 internal class Program
 {

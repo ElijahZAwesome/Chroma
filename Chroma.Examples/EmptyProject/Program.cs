@@ -1,4 +1,4 @@
-﻿using EmptyProject;
+﻿namespace EmptyProject;
 
 internal class Program
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using Chroma.Audio.Sources;
+using Chroma.ContentManagement.FileSystem;
 using Chroma.Graphics;
 using Chroma.Graphics.Accelerated;
 using Chroma.Graphics.TextRendering.Bitmap;
@@ -10,7 +11,7 @@ using Chroma.Graphics.TextRendering.TrueType;
 using Chroma.Input;
 using Chroma.MemoryManagement;
 
-namespace Chroma.ContentManagement.FileSystem.ContentProviders
+namespace Chroma.ContentManagement.ContentProviders
 {
     public class FileSystemContentProvider : DisposableResource, IContentProvider
     {

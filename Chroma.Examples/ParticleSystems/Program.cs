@@ -1,4 +1,4 @@
-﻿using ParticleSystems;
+﻿namespace ParticleSystems;
 
 internal class Program
 {

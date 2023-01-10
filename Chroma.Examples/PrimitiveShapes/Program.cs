@@ -1,4 +1,4 @@
-﻿using PrimitiveShapes;
+﻿namespace PrimitiveShapes;
 
 internal class Program
 {

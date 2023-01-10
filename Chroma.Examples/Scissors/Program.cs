@@ -1,4 +1,4 @@
-﻿using Scissors;
+﻿namespace Scissors;
 
 internal class Program
 {

@@ -1,4 +1,4 @@
-﻿using Pong;
+﻿namespace Pong;
 
 internal class Program
 {

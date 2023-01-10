@@ -1,4 +1,4 @@
-﻿using CustomContentProvider;
+﻿namespace CustomContentProvider;
 
 internal class Program
 {

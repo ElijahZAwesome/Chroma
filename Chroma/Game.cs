@@ -2,7 +2,7 @@
 using System.Reflection;
 using Chroma.Audio;
 using Chroma.ContentManagement;
-using Chroma.ContentManagement.FileSystem.ContentProviders;
+using Chroma.ContentManagement.ContentProviders;
 using Chroma.Diagnostics;
 using Chroma.Diagnostics.Logging;
 using Chroma.Extensibility;

@@ -1,4 +1,4 @@
-﻿using Fonts;
+﻿namespace Fonts;
 
 internal class Program
 {

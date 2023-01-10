@@ -1,4 +1,4 @@
-﻿using AudioRecording;
+﻿namespace AudioRecording;
 
 internal class Program
 {

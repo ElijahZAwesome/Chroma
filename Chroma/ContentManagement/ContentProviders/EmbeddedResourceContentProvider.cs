@@ -13,7 +13,7 @@ using Chroma.Graphics.TextRendering.TrueType;
 using Chroma.Input;
 using Chroma.MemoryManagement;
 
-namespace Chroma.ContentManagement.FileSystem.ContentProviders
+namespace Chroma.ContentManagement.ContentProviders
 {
     public class EmbeddedResourceContentProvider : DisposableResource, IContentProvider
     {

@@ -4,7 +4,7 @@ using System.Numerics;
 using Chroma;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
-using Chroma.ContentManagement.FileSystem.ContentProviders;
+using Chroma.ContentManagement.ContentProviders;
 using Chroma.Graphics;
 using Chroma.Input;
 

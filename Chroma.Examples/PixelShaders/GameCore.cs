@@ -6,7 +6,7 @@ using System.Text;
 using Chroma;
 using Chroma.ContentManagement;
 using Chroma.ContentManagement.FileSystem;
-using Chroma.ContentManagement.FileSystem.ContentProviders;
+using Chroma.ContentManagement.ContentProviders;
 using Chroma.Diagnostics;
 using Chroma.Diagnostics.Logging;
 using Chroma.Graphics;

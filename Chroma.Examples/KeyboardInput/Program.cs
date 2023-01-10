@@ -1,4 +1,4 @@
-﻿using KeyboardInput;
+﻿namespace KeyboardInput;
 
 internal class Program
 {

@@ -1,4 +1,4 @@
-﻿using ArbitraryGeometry;
+﻿namespace ArbitraryGeometry;
 
 internal class Program
 {

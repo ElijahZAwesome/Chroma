@@ -1,4 +1,4 @@
-﻿using LerpingCameras;
+﻿namespace LerpingCameras;
 
 internal class Program
 {

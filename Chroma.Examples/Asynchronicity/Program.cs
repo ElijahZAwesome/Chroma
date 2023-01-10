@@ -1,4 +1,4 @@
-﻿using Asynchronicity;
+﻿namespace Asynchronicity;
 
 internal class Program
 {
