@@ -3,17 +3,20 @@
         <TargetFrameworks>net6.0;net6.0-android</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <AndroidManifest>..\_common\AndroidManifest.xml</AndroidManifest>
+        <ApplicationId>com.chroma2d.$(AssemblyName.ToLowerInvariant())</ApplicationId>
     </PropertyGroup>
     
     <ItemGroup>
         <ProjectReference Include="..\..\Chroma\Chroma.csproj" />
+        <ProjectReference Include="..\..\Chroma.Natives\Chroma.Natives.csproj" />
+        <ProjectReference Include="..\..\Chroma.STB\Chroma.STB.csproj" />
     </ItemGroup>
     
     <ItemGroup Condition="$(TargetFramework.Contains('-android'))">
         <Compile Include="..\_common\GameActivity.cs" />
         <Compile Include="..\_common\AssemblyInfo.cs" />
         <EmbeddedResource Include="..\_common\Content\**">
-            <Link>\%(RecursiveDir)%(Filename)%(Extension)</Link>
+            <Link>Content\%(RecursiveDir)%(Filename)%(Extension)</Link>
         </EmbeddedResource>
     </ItemGroup>
 </Project>

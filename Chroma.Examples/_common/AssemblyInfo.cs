@@ -4,7 +4,7 @@ using Android.App;
 [assembly: Application(
     Debuggable = true,
     AllowBackup = true,
-    Label = "Chroma Example",
-    SupportsRtl = true
+    SupportsRtl = true,
+    Label = "Chroma Example"
 )]
 [assembly: Permission(Name = Manifest.Permission.HighSamplingRateSensors)]

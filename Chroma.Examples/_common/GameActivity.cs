@@ -8,7 +8,6 @@ namespace Chroma.Examples
     [Activity(
         Label = "Chroma",
         MainLauncher = true,
-        Icon = "@mipmap/appicon",
         HardwareAccelerated = true,
         ScreenOrientation = ScreenOrientation.Landscape
     )]
@@ -16,7 +15,8 @@ namespace Chroma.Examples
     {
         public override Game GetGame()
         {
-            return (Game)Activator.CreateInstance(Assembly.GetExecutingAssembly().GetName().Name, "GameCore").Unwrap();
+            var coreType = Type.GetType(Assembly.GetExecutingAssembly().GetName().Name + ".GameCore");
+            return (Game)Activator.CreateInstance(coreType!);
         }
     }
 }
